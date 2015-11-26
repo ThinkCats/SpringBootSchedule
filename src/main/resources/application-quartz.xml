@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+       <!-- quartz scheduler -->
+       <bean id="scheduleFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+              <property name="configLocation" value="classpath:quartz.properties"></property>
+              <property name="overwriteExistingJobs" value="true"></property>
+              <property name="jobDetails">
+                     <list>
+                            <ref bean="jobOneDetailFactory"/>
+                     </list>
+              </property>
+              <property name="triggers">
+                     <list>
+                            <ref bean="myTrigger"></ref>
+                     </list>
+              </property>
+       </bean>
+
+
+       <!-- =================  JobOne ======================== -->
+
+       <!-- JobDetail Factory -->
+       <bean id="jobOneDetailFactory" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+              <property name="jobClass" value="org.job.JobOne" />
+              <property name="durability" value="true"/>
+              <property name="requestsRecovery" value="true"/>
+       </bean>
+
+       <!-- JobOne Trigger -->
+       <bean id="myTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+              <property name="cronExpression" value="0/5 * * ? * * *"></property>
+              <property name="jobDetail" ref="jobOneDetailFactory" />
+       </bean>
+
+</beans>
